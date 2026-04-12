@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api/axios';
 import '../styles/Users.css';
@@ -8,15 +7,9 @@ function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { token, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
     const fetchUsers = async () => {
       try {
         setLoading(true);
@@ -36,12 +29,7 @@ function Users() {
     };
 
     fetchUsers();
-  }, [token, navigate]);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  }, [token]);
 
   const handleDeleteUser = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
@@ -60,18 +48,13 @@ function Users() {
 
   if (loading) {
     return (
-      <div className="users-container">
-        <div className="loading">Loading users...</div>
-      </div>
+      <div className="loading">Loading users...</div>
     );
   }
 
   return (
-    <div className="users-container">
-      <div className="users-header">
-        <h1>Users</h1>
-        <button className="logout-btn" onClick={handleLogout}>Logout</button>
-      </div>
+    <div className="users-content">
+      <h1>Users</h1>
 
       {error && <div className="error-message">{error}</div>}
 
